@@ -23,7 +23,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     private final ShortUrlRepository urlRepository;
     private final ShortUrlValidator urlValidator;
     private final UrlEncoders urlEncoder;
-    public static final int FIRST_REQUEST = 1;
 
     @Override
     @Transactional
@@ -40,11 +39,13 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             ShortUrl shortUrl = shortenUrlSet.stream()
                     .filter(urlSet -> Objects.equals(urlSet.getAlgorithm(), urlRequest.getAlgorithm()))
                     .findAny()
-                    .orElseGet(() -> encoding(urlEntity, urlRequest.getAlgorithm()));
+                    .orElseGet(() -> {
+                        ShortUrl encodedURL = encoding(urlEntity, urlRequest.getAlgorithm());
+                        shortenUrlSet.add(encodedURL);
+                        return encodedURL;
+                    });
 
-
-            shortenUrlSet.add(shortUrl);
-
+            shortUrl.increaseCount();
             return toShortUrlResponse(urlEntity, shortUrl.getShortUrl());
         }
 
@@ -53,9 +54,11 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         ShortUrl shortUrl = encoding(savedUrl, urlRequest.getAlgorithm());
 
         savedUrl.getShortUrl().add(shortUrl);
+        shortUrl.increaseCount();
 
         return toShortUrlResponse(savedUrl, shortUrl.getShortUrl());
     }
+
 
     @Override
     public String decodeUrl(String shortUrl) {
@@ -72,7 +75,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
         return ShortUrl.builder()
                 .shortUrl(encodeURL)
-                .requestCount(FIRST_REQUEST)
                 .algorithm(algorithm)
                 .build();
     }
