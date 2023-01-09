@@ -1,0 +1,14 @@
+create table if not exists short_url(
+    id int AUTO_INCREMENT PRIMARY KEY,
+    short_url VARCHAR (100),
+    origin_url VARCHAR (2000) NOT NULL ,
+    req_count INT DEFAULT 1
+);
+
+
+create SEQUENCE IF NOT EXISTS url_seq
+MINVALUE 100000000
+MAXVALUE 999999999
+START WITH  100000000
+INCREMENT BY 1
+CACHE 20;
