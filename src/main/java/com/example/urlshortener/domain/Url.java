@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "url")
 @Builder
@@ -21,9 +21,9 @@ public class Url {
     @ElementCollection
     @AttributeOverrides({
             @AttributeOverride(name = "shortUrl",
-                    column = @Column(name = "short_url")),
+                    column = @Column(name = "short_url", nullable = false)),
             @AttributeOverride(name = "algorithm",
-                    column = @Column(name = "algorithm")),
+                    column = @Column(name = "algorithm", nullable = false)),
             @AttributeOverride(name = "requestCount",
                     column = @Column(name = "request_count"))
     })
@@ -39,6 +39,4 @@ public class Url {
     @Column(name = "original_url", nullable = false, unique = true)
     private String originalUrl;
 
-    @Column(name = "request_count")
-    private long requestCount;
 }

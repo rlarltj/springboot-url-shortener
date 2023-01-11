@@ -1,5 +1,6 @@
 package com.example.urlshortener.encode;
 
+import com.example.urlshortener.exception.NoEncoderFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,6 +17,6 @@ public class UrlEncoders {
         return urlEncoderList.stream()
                 .filter(encoder -> encoder.supports(algorithm))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new NoEncoderFoundException());
     }
 }

@@ -16,11 +16,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("api/v1/urls")
 public class ApiController {
     private final ShortUrlService urlService;
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "api/v1/urls", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ShortUrlResponse getShortUrl(@RequestBody @Valid ShortUrlRequest urlRequest) {
         ShortUrlResponse shortUrlResponse = urlService.generateShortUrl(urlRequest);
 
