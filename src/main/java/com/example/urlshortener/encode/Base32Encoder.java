@@ -13,12 +13,12 @@ public class Base32Encoder implements ShortUrlEncoder {
     public static final int SHORTEN_LENGTH = 8;
 
     @Override
-    public String encode(Url url) {
+    public String encode(String originalURL) {
         StringBuilder shortUrl = new StringBuilder();
 
         shortUrl.append(
                 BaseEncoding.base32()
-                        .encode(url.getOriginalUrl().getBytes(UTF_8)));
+                        .encode(originalURL.getBytes(UTF_8)));
 
         shortUrl.reverse();
 

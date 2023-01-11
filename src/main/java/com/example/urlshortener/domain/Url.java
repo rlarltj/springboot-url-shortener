@@ -6,9 +6,11 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 @Entity
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "url")
 @Builder
@@ -19,24 +21,18 @@ public class Url {
     private Integer id;
 
     @ElementCollection
-    @AttributeOverrides({
-            @AttributeOverride(name = "shortUrl",
-                    column = @Column(name = "short_url", nullable = false)),
-            @AttributeOverride(name = "algorithm",
-                    column = @Column(name = "algorithm", nullable = false)),
-            @AttributeOverride(name = "requestCount",
-                    column = @Column(name = "request_count"))
-    })
-    @CollectionTable(
-            name = "short_url",
-            joinColumns = @JoinColumn(name = "url_id"),
-            uniqueConstraints = @UniqueConstraint(columnNames = "short_url")
-    )
-    @Column(name = "short_url")
     @Builder.Default
     private Set<ShortUrl> shortUrl = new HashSet<>();
 
     @Column(name = "original_url", nullable = false, unique = true)
     private String originalUrl;
 
+    @Builder
+    protected Url(Integer id, Set<ShortUrl> shortUrl, String originalUrl) {
+        checkNotNull(originalUrl);
+        checkState(shortUrl.size() > 0);
+        this.id = id;
+        this.shortUrl = shortUrl;
+        this.originalUrl = originalUrl;
+    }
 }

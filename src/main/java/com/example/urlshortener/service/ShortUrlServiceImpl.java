@@ -5,7 +5,7 @@ import com.example.urlshortener.domain.Url;
 import com.example.urlshortener.dto.ShortUrlRequest;
 import com.example.urlshortener.dto.ShortUrlResponse;
 import com.example.urlshortener.encode.ShortUrlEncoder;
-import com.example.urlshortener.encode.UrlEncoders;
+import com.example.urlshortener.encode.EncodeLayer;
 import com.example.urlshortener.repository.ShortUrlRepository;
 import com.example.urlshortener.util.ShortUrlValidator;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,8 @@ import java.util.Set;
 public class ShortUrlServiceImpl implements ShortUrlService {
     private final ShortUrlRepository urlRepository;
     private final ShortUrlValidator urlValidator;
-    private final UrlEncoders urlEncoder;
+    private final EncodeLayer encodeLayer;
+    public static final int FIRST_REQUEST = 1;
 
     @Override
     @Transactional
@@ -40,7 +41,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                     .filter(urlSet -> Objects.equals(urlSet.getAlgorithm(), urlRequest.getAlgorithm()))
                     .findAny()
                     .orElseGet(() -> {
-                        ShortUrl encodedURL = encoding(urlEntity, urlRequest.getAlgorithm());
+                        ShortUrl encodedURL = encoding(originalUrl, urlRequest.getAlgorithm());
                         shortenUrlSet.add(encodedURL);
                         return encodedURL;
                     });
@@ -49,10 +50,16 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         }
 
 
-        Url savedUrl = urlRepository.save(Url.builder().originalUrl(originalUrl).build());
-        ShortUrl shortUrl = encoding(savedUrl, urlRequest.getAlgorithm());
+        ShortUrl shortUrl = encoding(originalUrl, urlRequest.getAlgorithm());
 
-        savedUrl.getShortUrl().add(shortUrl);
+        Url createURL = Url
+                .builder()
+                .shortUrl(Set.of(shortUrl))
+                .originalUrl(originalUrl)
+                .build();
+
+        Url savedUrl = urlRepository.save(createURL);
+
 
         return toShortUrlResponse(savedUrl, shortUrl.getShortUrl());
     }
@@ -64,27 +71,25 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         Url findURL = urlRepository.findUrlByShortUrl(shortUrl)
                 .orElseThrow(() -> new IllegalArgumentException());
 
-
-        System.out.println("==============");
         findURL.getShortUrl()
                 .stream()
                 .filter(url -> Objects.equals(url.getShortUrl(), shortUrl))
                 .findAny()
                 .orElseThrow()
                 .increaseCount();
-        System.out.println("---------------");
 
         return findURL.getOriginalUrl();
     }
 
 
-    private ShortUrl encoding(Url url, String algorithm){
-        ShortUrlEncoder encoder = urlEncoder.findUrlEncoder(algorithm);
-        String encodeURL = encoder.encode(url);
+    private ShortUrl encoding(String originalURL, String algorithm){
+        ShortUrlEncoder encoder = encodeLayer.findUrlEncoder(algorithm);
+        String encodeURL = encoder.encode(originalURL);
 
         return ShortUrl.builder()
                 .shortUrl(encodeURL)
                 .algorithm(algorithm)
+                .requestCount(FIRST_REQUEST)
                 .build();
     }
 
