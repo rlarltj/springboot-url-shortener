@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UrlEncoders {
+public class EncodeLayer {
     private final List<ShortUrlEncoder> urlEncoderList;
 
-    public UrlEncoders(List<ShortUrlEncoder> urlEncoderList) {
+    public EncodeLayer(List<ShortUrlEncoder> urlEncoderList) {
         this.urlEncoderList = urlEncoderList;
     }
 

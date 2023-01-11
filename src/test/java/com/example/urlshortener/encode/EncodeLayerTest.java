@@ -11,13 +11,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class UrlEncodersTest {
-    private UrlEncoders encoders;
+class EncodeLayerTest {
+    private EncodeLayer encoders;
 
     @BeforeEach
     void setup() {
-        List<ShortUrlEncoder> encoderList = Arrays.asList(new Base32Encoder(), new Base62Encoder());
-        this.encoders = new UrlEncoders(encoderList);
+        List<ShortUrlEncoder> encoderList = Arrays.asList(new Base32Encoder(), new Base64Encoder());
+        this.encoders = new EncodeLayer(encoderList);
     }
 
     @Test
@@ -26,11 +26,11 @@ class UrlEncodersTest {
         String Base32Algorithm = EncodeType.BASE32.name();
         ShortUrlEncoder url32Encoder = encoders.findUrlEncoder(Base32Algorithm);
 
-        String Base62Algorithm = EncodeType.BASE62.name();;
+        String Base62Algorithm = EncodeType.BASE64.name();;
         ShortUrlEncoder url62Encoder = encoders.findUrlEncoder(Base62Algorithm);
 
         assertTrue(url32Encoder instanceof Base32Encoder);
-        assertTrue(url62Encoder instanceof Base62Encoder);
+        assertTrue(url62Encoder instanceof Base64Encoder);
     }
 
     @Test
