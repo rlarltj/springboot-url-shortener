@@ -2,7 +2,6 @@ package com.example.urlshortener.encode;
 
 import com.example.urlshortener.domain.Url;
 import com.google.common.io.BaseEncoding;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -10,20 +9,26 @@ import java.util.Objects;
 import static java.nio.charset.StandardCharsets.*;
 
 @Component
-//@Primary
 public class Base32Encoder implements ShortUrlEncoder {
     public static final int SHORTEN_LENGTH = 8;
 
     @Override
     public String encode(Url url) {
-        String encode = BaseEncoding.base32()
-                .encode(url.getOriginalUrl().getBytes(UTF_8));
+        StringBuilder shortUrl = new StringBuilder();
 
-        if(encode.length() > SHORTEN_LENGTH){
-            return encode.substring(0, SHORTEN_LENGTH);
+        shortUrl.append(
+                BaseEncoding.base32()
+                        .encode(url.getOriginalUrl().getBytes(UTF_8)));
+
+        shortUrl.reverse();
+
+        if(shortUrl.length() > SHORTEN_LENGTH){
+            String substring = shortUrl.substring(0, SHORTEN_LENGTH);
+
+            return substring;
         }
 
-        return encode;
+        return shortUrl.toString();
     }
 
     @Override

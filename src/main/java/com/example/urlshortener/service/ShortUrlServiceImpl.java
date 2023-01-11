@@ -45,7 +45,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                         return encodedURL;
                     });
 
-            shortUrl.increaseCount();
             return toShortUrlResponse(urlEntity, shortUrl.getShortUrl());
         }
 
@@ -54,16 +53,26 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         ShortUrl shortUrl = encoding(savedUrl, urlRequest.getAlgorithm());
 
         savedUrl.getShortUrl().add(shortUrl);
-        shortUrl.increaseCount();
 
         return toShortUrlResponse(savedUrl, shortUrl.getShortUrl());
     }
 
 
     @Override
+    @Transactional
     public String decodeUrl(String shortUrl) {
         Url findURL = urlRepository.findUrlByShortUrl(shortUrl)
                 .orElseThrow(() -> new IllegalArgumentException());
+
+
+        System.out.println("==============");
+        findURL.getShortUrl()
+                .stream()
+                .filter(url -> Objects.equals(url.getShortUrl(), shortUrl))
+                .findAny()
+                .orElseThrow()
+                .increaseCount();
+        System.out.println("---------------");
 
         return findURL.getOriginalUrl();
     }

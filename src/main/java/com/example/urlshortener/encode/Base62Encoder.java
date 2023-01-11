@@ -8,7 +8,6 @@ import java.util.Objects;
 import static com.example.urlshortener.encode.Base32Encoder.SHORTEN_LENGTH;
 
 @Component
-//@Primary
 public class Base62Encoder implements ShortUrlEncoder {
     private final int BASE62 = 62;
     private static final char[] BASE62_CHAR = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
@@ -23,8 +22,11 @@ public class Base62Encoder implements ShortUrlEncoder {
             id /= BASE62;
         }
 
+        shortUrl.reverse();
+
         if (shortUrl.length() > SHORTEN_LENGTH) {
-            return shortUrl.substring(0, SHORTEN_LENGTH);
+            String substring = shortUrl.substring(0, SHORTEN_LENGTH);
+            return substring;
         }
 
         return shortUrl.toString();
