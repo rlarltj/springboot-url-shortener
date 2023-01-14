@@ -1,4 +1,4 @@
-package com.example.urlshortener.exception;
+package com.example.urlshortener.global.exception;
 
 public class NotValidUrlException extends RuntimeException{
     public NotValidUrlException() {
