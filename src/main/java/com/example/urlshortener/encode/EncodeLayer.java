@@ -1,6 +1,6 @@
 package com.example.urlshortener.encode;
 
-import com.example.urlshortener.exception.NoEncoderFoundException;
+import com.example.urlshortener.global.exception.NoEncoderFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

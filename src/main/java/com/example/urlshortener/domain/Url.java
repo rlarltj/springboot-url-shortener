@@ -9,19 +9,19 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-@Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "url")
-@Builder
+@Entity
 public class Url {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "url_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ElementCollection
     @Builder.Default
+    @OneToMany(mappedBy = "url", orphanRemoval = true)
     private Set<ShortUrl> shortUrl = new HashSet<>();
 
     @Column(name = "original_url", nullable = false, unique = true)
@@ -35,4 +35,5 @@ public class Url {
         this.shortUrl = shortUrl;
         this.originalUrl = originalUrl;
     }
+
 }

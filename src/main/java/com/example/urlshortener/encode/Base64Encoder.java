@@ -1,6 +1,5 @@
 package com.example.urlshortener.encode;
 
-import com.example.urlshortener.domain.Url;
 import com.google.common.io.BaseEncoding;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class Base64Encoder implements ShortUrlEncoder {
-
     @Override
     public String encode(String originalURL) {
         StringBuilder shortUrl = new StringBuilder();
