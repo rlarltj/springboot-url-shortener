@@ -15,9 +15,11 @@ class Base64EncoderTest {
 
     @Test
     void encoderTest() {
+        //given
         String encodedUrl = base62Encoder.encode("https://www.naver.com");
         int limitLength = 8;
-        
+
+        //when & then
         assertTrue(encodedUrl.length() <= limitLength);
     }
 }

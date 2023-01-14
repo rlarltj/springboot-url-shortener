@@ -8,6 +8,7 @@ import com.example.urlshortener.encode.Base32Encoder;
 import com.example.urlshortener.encode.EncodeType;
 import com.example.urlshortener.encode.EncodeLayer;
 import com.example.urlshortener.repository.ShortUrlRepository;
+import com.example.urlshortener.repository.UrlRepository;
 import com.example.urlshortener.util.ShortUrlValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,10 @@ class ShortUrlServiceImplTest {
     ShortUrlServiceImpl shortUrlService;
 
     @Mock
-    private ShortUrlRepository urlRepository;
+    private UrlRepository urlRepository;
+
+    @Mock
+    private ShortUrlRepository shortUrlRepository;
 
     @Spy
     private Base32Encoder encoder;
@@ -60,6 +64,7 @@ class ShortUrlServiceImplTest {
     @Test
     @Transactional
     void 단축Url_생성() {
+        //given
         Url url = getUrl();
 
         when(urlRepository.findByOriginalUrl(originalURL)).thenReturn(Optional.empty());
@@ -68,6 +73,7 @@ class ShortUrlServiceImplTest {
         when(encoder.encode(originalURL)).thenReturn(shortURL);
         when(validator.validateUrl(originalURL)).thenReturn(true);
 
+        //when
         ShortUrlResponse shortUrlResponse = shortUrlService.generateShortUrl(shortUrlRequest);
 
         verify(urlRepository).findByOriginalUrl(originalURL);
@@ -76,6 +82,7 @@ class ShortUrlServiceImplTest {
         verify(encoder).encode(originalURL);
         verify(validator).validateUrl(originalURL);
 
+        //then
         assertThat(shortUrlResponse)
                 .hasFieldOrPropertyWithValue("originalUrl", originalURL)
                 .hasFieldOrPropertyWithValue("shortUrl", shortURL);
@@ -84,16 +91,18 @@ class ShortUrlServiceImplTest {
     @Test
     @Transactional
     void 원본URL_조회() {
-
+        //given
         Url url = getUrl();
 
-        when(urlRepository.findUrlByShortUrl(shortURL))
-                .thenReturn(Optional.of(url));
+        when(shortUrlRepository.findShortUrlByShortUrl(shortURL))
+                .thenReturn(Optional.of(ShortUrl.builder().shortUrl(shortURL).build()));
 
+        //when
         String original = shortUrlService.decodeUrl(shortURL);
 
         verify(urlRepository).findUrlByShortUrl(shortURL);
 
+        //then
         assertThat(original).isEqualTo(url.getOriginalUrl());
     }
 

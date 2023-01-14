@@ -1,6 +1,6 @@
 package com.example.urlshortener.encode;
 
-import com.example.urlshortener.exception.NoEncoderFoundException;
+import com.example.urlshortener.global.exception.NoEncoderFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,12 +23,15 @@ class EncodeLayerTest {
     @Test
     @DisplayName("입력받은 Algorithm에 해당하는 인코더를 찾을 수 있다.")
     void 인코더_검색_성공() {
+        //given
         String Base32Algorithm = EncodeType.BASE32.name();
-        ShortUrlEncoder url32Encoder = encoders.findUrlEncoder(Base32Algorithm);
-
         String Base62Algorithm = EncodeType.BASE64.name();;
+
+        //when
+        ShortUrlEncoder url32Encoder = encoders.findUrlEncoder(Base32Algorithm);
         ShortUrlEncoder url62Encoder = encoders.findUrlEncoder(Base62Algorithm);
 
+        //then
         assertTrue(url32Encoder instanceof Base32Encoder);
         assertTrue(url62Encoder instanceof Base64Encoder);
     }
@@ -36,8 +39,10 @@ class EncodeLayerTest {
     @Test
     @DisplayName("입력받은 Algorithm에 해당하는 인코더가 존재하지 않는 경우 예외가 발생한다.")
     void 인코더_검색_실패() {
+        //given
         String strangeAlgorithm = "WonderfulEncoder";
 
+        //when & then
         assertThrows(NoEncoderFoundException.class, () -> encoders.findUrlEncoder(strangeAlgorithm));
     }
 }

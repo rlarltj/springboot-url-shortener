@@ -15,10 +15,11 @@ class Base32EncoderTest {
 
     @Test
     void encoderTest() {
+        //given
         String encodedUrl = base32Encoder.encode("https://www.naver.com");
         int limitLength = 8;
 
-        System.out.println(encodedUrl);
+        //when & then
         assertTrue(encodedUrl.length() <= limitLength);
     }
 }
