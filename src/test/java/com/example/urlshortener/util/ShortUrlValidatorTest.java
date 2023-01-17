@@ -1,6 +1,6 @@
 package com.example.urlshortener.util;
 
-import com.example.urlshortener.exception.NotValidUrlException;
+import com.example.urlshortener.global.exception.NotValidUrlException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

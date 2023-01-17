@@ -1,6 +1,6 @@
 package com.example.urlshortener.util;
 
-import com.example.urlshortener.exception.NotValidUrlException;
+import com.example.urlshortener.global.exception.NotValidUrlException;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.stereotype.Component;
 
